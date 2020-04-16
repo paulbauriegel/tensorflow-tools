@@ -27,13 +27,14 @@ with tf.Session() as sess:
         
         # Attributes without data_format, NWHC is default
         atts = {key:n_org.node_def.attr[key] for key in list(n_org.node_def.attr.keys()) if key != 'data_format'}
-        if n_org.type in ['MaxPool', 'AvgPool']:
+        if n_org.type in ['MaxPool', 'AvgPool', 'Conv2D']:
             kl = atts['ksize'].list.i
             ksl = [kl[0], kl[2], kl[3], kl[1]]
             st = atts['strides'].list.i
             stl = [st[0], st[2], st[3], st[1]]
             atts['ksize'] = tf.AttrValue(list=tf.AttrValue.ListValue(i=ksl))
             atts['strides'] = tf.AttrValue(list=tf.AttrValue.ListValue(i=stl))
+            atts = {key:n_org.node_def.attr[key] for key in list(n_org.node_def.attr.keys()) if key != 'data_format'}
 
         # Create new Operation
         #print(n_org.type, n_org.name, list(n_org.inputs), n_org.node_def.attr['data_format'])
