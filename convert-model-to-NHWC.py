@@ -32,9 +32,9 @@ with tf.Session() as sess:
             stl = [st[0], st[2], st[3], st[1]]
             atts['strides'] = tf.AttrValue(list=tf.AttrValue.ListValue(i=stl))
         if n_org.type in ['MaxPool', 'AvgPool']:
-            st = atts['strides'].list.i
+            st = atts['ksize'].list.i
             stl = [st[0], st[2], st[3], st[1]]
-            atts['strides'] = tf.AttrValue(list=tf.AttrValue.ListValue(i=stl))
+            atts['ksize'] = tf.AttrValue(list=tf.AttrValue.ListValue(i=stl))
 
         # Create new Operation
         #print(n_org.type, n_org.name, list(n_org.inputs), n_org.node_def.attr['data_format'])
