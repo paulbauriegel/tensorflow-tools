@@ -27,18 +27,18 @@ with tf.Session() as sess:
         
         # Attributes without data_format, NWHC is default
         atts = {key:n_org.node_def.attr[key] for key in list(n_org.node_def.attr.keys()) if key != 'data_format'}
-        if n_org.type in ['MaxPool', 'AvgPool', 'Conv2D']:
-            kl = atts['ksize'].list.i
-            ksl = [kl[0], kl[2], kl[3], kl[1]]
+        if n_org.type in['MaxPool', 'AvgPool','Conv2D']:
             st = atts['strides'].list.i
             stl = [st[0], st[2], st[3], st[1]]
-            atts['ksize'] = tf.AttrValue(list=tf.AttrValue.ListValue(i=ksl))
             atts['strides'] = tf.AttrValue(list=tf.AttrValue.ListValue(i=stl))
-            atts = {key:n_org.node_def.attr[key] for key in list(n_org.node_def.attr.keys()) if key != 'data_format'}
+        if n_org.type in ['MaxPool', 'AvgPool']:
+            st = atts['strides'].list.i
+            stl = [st[0], st[2], st[3], st[1]]
+            atts['strides'] = tf.AttrValue(list=tf.AttrValue.ListValue(i=stl))
 
         # Create new Operation
         #print(n_org.type, n_org.name, list(n_org.inputs), n_org.node_def.attr['data_format'])
-        op = sess.graph.create_op(op_type=n_org.type, inputs=op_inputs, name=n_org.name+'_new', attrs=atts) 
+        op = sess.graph.create_op(op_type=n_org.type, inputs=op_inputs, name=n_org.name+'_new', dtypes=[tf.float32], attrs=atts) 
         out_tens = sess.graph.get_tensor_by_name(n_org.name+'_new'+':0')
         out_trans = tf.transpose(out_tens, [0, 3, 1, 2], name=n_org.name +'_transp_out')
         assert out_trans.shape == sess.graph.get_tensor_by_name(n_org.name+':0').shape
