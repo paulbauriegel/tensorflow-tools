@@ -1,5 +1,8 @@
 import tensorflow as tf
+if not tf.__version__.startswith('1'):
+  import tensorflow.compat.v1 as tf
 from tensorflow.python.tools import optimize_for_inference_lib
+
 graph_def_file = "model_lcnn_29v2.pb"
 
 tf.reset_default_graph()
